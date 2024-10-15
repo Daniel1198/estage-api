@@ -1,0 +1,27 @@
+@mjml()
+<mjml>
+    <mj-body>
+      <mj-section>
+        <mj-column>
+  
+          <mj-image width="100px" src="http://localhost:3333/storage/icon.svg"></mj-image>
+  
+          <mj-section background-color="#1b57b2">
+            <mj-column>
+            <mj-image padding-top="0" width="50px" src="https://www.svgrepo.com/show/529055/lock-unlocked.svg"></mj-image></mj-column>
+              <mj-text align="center" font-weight="200" font-size="30px" color="#fff" font-family="Inter">Création de compte</mj-text>
+          </mj-section>
+  
+          <mj-text font-size="16px" color="#48709B" font-family="Inter">Hello <span style="font-weight: bolder">{{ username }}</span>,</mj-text>
+          <mj-text padding-top="30px" align="justify" font-size="16px" color="#48709B" font-family="inter">Votre compte vient d'être créé avec succès. Trouvez-ci dessous le mot de passe associé à votre compte ainsi que votre code utilisateur.</mj-text>
+          
+          <mj-text padding-top="30px" align="justify" font-size="16px" color="#48709B" font-family="inter">Code utilisateur : <span style="font-weight: bolder">{{ codeUser }}</span></mj-text>
+          <mj-text padding-top="30px" align="justify" font-size="16px" color="#48709B" font-family="inter">Mot de passe : <span style="font-weight: bolder">{{ password }}</span></mj-text>
+          
+          <mj-text padding-top="30px" align="justify" font-size="16px" color="#48709B" font-family="inter">Pour des raisons de sécurité, nous vous recommandons de changer ce mot de passe dès que possible depuis votre espace utilisateur.</mj-text>
+  
+        </mj-column>
+      </mj-section>
+    </mj-body>
+  </mjml>
+@end

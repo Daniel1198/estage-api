@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Calque_2" data-name="Calque 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 361.87 149.46">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #48729d;
+        stroke-miterlimit: 10;
+        stroke-width: 5px;
+      }
+
+      .cls-2 {
+        fill: #2759a5;
+      }
+
+      .cls-3 {
+        letter-spacing: -.03em;
+      }
+
+      .cls-3, .cls-4, .cls-5 {
+        fill: #2658a5;
+      }
+
+      .cls-4 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-5 {
+        letter-spacing: 0em;
+      }
+
+      .cls-6 {
+        font-family: LTSaeada-Light, 'LT Saeada';
+        font-size: 106.81px;
+        font-weight: 300;
+      }
+    </style>
+  </defs>
+  <g id="Calque_1-2" data-name="Calque 1">
+    <g>
+      <text class="cls-6" transform="translate(0 122.97)"><tspan class="cls-2" x="0" y="0">e</tspan><tspan class="cls-3" x="60.24" y="0">S</tspan><tspan class="cls-4" x="117.38" y="0">t</tspan><tspan class="cls-5" x="149.96" y="0">age.</tspan></text>
+      <g>
+        <path class="cls-1" d="M217.48,23.67c1.81-.8,2.63-2.91,1.83-4.71-.37-.84-1.05-1.5-1.9-1.86l-30.64-13.96c-1.88-.86-4.05-.86-5.94,0l-30.64,13.94c-1.81.79-2.63,2.9-1.84,4.71.36.82,1.02,1.48,1.84,1.84l30.64,13.97c1.88.86,4.05.86,5.94,0l30.71-13.94Z"/>
+        <path class="cls-1" d="M219.55,20.38v21.45"/>
+        <path class="cls-1" d="M162.35,29.32v12.51c0,5.92,9.6,10.73,21.45,10.73s21.45-4.8,21.45-10.73v-12.51"/>
+      </g>
+    </g>
+  </g>
+</svg>

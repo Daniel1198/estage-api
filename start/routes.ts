@@ -9,6 +9,7 @@ const StagesController = () => import('#controllers/stages_controller')
 const AuthController = () => import('#controllers/auth_controller')
 const PermissionsController = () => import('#controllers/permissions_controller')
 const EntitesController = () => import('#controllers/entites_controller')
+const StagiairesController = () => import('#controllers/stagiaires_controller')
 
 router.group(() => {
   // exercices routes
@@ -99,6 +100,18 @@ router.group(() => {
     router.put('/:id', [StagesController, 'edit']).where('id', router.matchers.number())
     router.delete('/:id', [StagesController, 'delete']).where('id', router.matchers.number())
   }).prefix('/stages')
+  .use(middleware.auth({
+    guards: ['api'],
+  }))
+
+  // stagiaires routes
+  router.group(() => {
+    router.post('', [StagiairesController, 'store'])
+    router.get('', [StagiairesController, 'read'])
+    router.get('/:id', [StagiairesController, 'find']).where('id', router.matchers.number())
+    router.put('/:id', [StagiairesController, 'edit']).where('id', router.matchers.number())
+    router.delete('/:id', [StagiairesController, 'delete']).where('id', router.matchers.number())
+  }).prefix('/stagiaires')
   .use(middleware.auth({
     guards: ['api'],
   }))

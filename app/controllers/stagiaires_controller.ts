@@ -6,7 +6,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 
 export default class StagiairesController {
-    async store({ request, response }: HttpContext) {
+    async store({ request, response, auth }: HttpContext) {
         try {
             const payload = await request.validateUsing(storeInternValidator)
             const stagiaire = new Stagiaire()
@@ -47,12 +47,11 @@ export default class StagiairesController {
             stagiaire.lienAvecStagiaire = payload.lienAvecStagiaire!
             stagiaire.telephoneGarant = payload.telephoneGarant!
             stagiaire.etablissement = payload.etablissement!
-            stagiaire.niveau = payload.niveau!
             stagiaire.qualification = payload.qualification!
             stagiaire.statut = payload.statut
-            stagiaire.userId = payload.userId
+            stagiaire.userId = auth.user?.id!
             stagiaire.save()
-            return response.status(201).json({ status: 201, message: 'Stagiaire ajouté avec succès ! ' })
+            return response.status(201).json({ status: 201, message: 'Stagiaire ajouté avec succès ! ', data: stagiaire })
         } catch (error) {
             return response.json(error)
         }
@@ -61,7 +60,7 @@ export default class StagiairesController {
     async read({ response }: HttpContext) {
         try {
             const stagiaires = await Stagiaire.query().preload('user').preload('stages')
-            return response.status(201).json({ status: 201, data: stagiaires })
+            return response.status(201).json(stagiaires)
         } catch (error) {
             return response.json(error)
         }
@@ -70,7 +69,7 @@ export default class StagiairesController {
     async find({ request, response }: HttpContext) {
         try {
             const stagiaire = await Stagiaire.query().where({ 'id': request.params().id }).preload('user').preload('stages').firstOrFail()
-            return response.status(201).json({ status: 201, data: stagiaire })
+            return response.status(201).json(stagiaire)
         } catch (error) {
             return response.json(error)
         }
@@ -124,7 +123,6 @@ export default class StagiairesController {
             stagiaire.lienAvecStagiaire = payload.lienAvecStagiaire!
             stagiaire.telephoneGarant = payload.telephoneGarant!
             stagiaire.etablissement = payload.etablissement!
-            stagiaire.niveau = payload.niveau!
             stagiaire.qualification = payload.qualification!
             stagiaire.save()
             return response.status(201).json({ status: 201, message: 'Informations du stagiaire modifiées avec succès !' })

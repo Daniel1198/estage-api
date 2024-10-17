@@ -12,28 +12,30 @@ export const storeInternValidator = vine.compile(
         nationalite: vine.string().toUpperCase().trim(),
         situationMatrimoniale: vine.string().toUpperCase().trim(),
         telephone: vine.string().toUpperCase().trim().fixedLength(10).alphaNumeric(),
-        email: vine.string().trim().toLowerCase().email().minLength(5).optional(),
-        communeQuartier: vine.string().trim().toUpperCase().minLength(6).optional(),
+        email: vine.string().trim().toLowerCase().email().minLength(5),
+        communeQuartier: vine.string().trim().toUpperCase().minLength(6),
         photo: vine.file({
             size: '2mb',
             extnames: ['jpg', 'jpeg', 'png']
         }).nullable().optional(),
+        pieceIdentite: vine.file({
+            size: '2mb',
+            extnames: ['jpg', 'jpeg', 'png', 'pdf']
+        }).nullable().optional(),
         lettreMotivation: vine.file({
             size: '2mb',
-            extnames: ['jpg', 'jpeg', 'png']
+            extnames: ['jpg', 'jpeg', 'png', 'pdf']
         }).nullable().optional(),
         cv: vine.file({
             size: '2mb',
-            extnames: ['jpg', 'jpeg', 'png']
+            extnames: ['jpg', 'jpeg', 'png', 'pdf']
         }).nullable().optional(),
-        nomCompletGarant: vine.string().trim().toUpperCase().minLength(5).optional(),
-        lienAvecStagiaire: vine.string().trim().toUpperCase().minLength(6).optional(),
-        telephoneGarant: vine.string().trim().fixedLength(10).alphaNumeric().optional(),
-        etablissement: vine.string().trim().toUpperCase().optional(),
-        niveau: vine.string().trim().toUpperCase().optional(),
-        qualification: vine.string().trim().toUpperCase().optional(),
-        statut: vine.string().toUpperCase().trim(),
-        userId: vine.number()
+        nomCompletGarant: vine.string().trim().toUpperCase().minLength(5).optional().nullable(),
+        lienAvecStagiaire: vine.string().trim().toUpperCase().minLength(6).optional().nullable(),
+        telephoneGarant: vine.string().trim().fixedLength(10).alphaNumeric().optional().nullable(),
+        etablissement: vine.string().trim().toUpperCase().optional().nullable(),
+        qualification: vine.string().trim().toUpperCase().optional().nullable(),
+        statut: vine.string().toUpperCase().trim()
     })
 )
 
@@ -54,19 +56,22 @@ export const editInternValidator = vine.compile(
             size: '2mb',
             extnames: ['jpg', 'jpeg', 'png']
         }).nullable().optional(),
+        pieceIdentite: vine.file({
+            size: '2mb',
+            extnames: ['jpg', 'jpeg', 'png', 'pdf']
+        }).nullable().optional(),
         lettreMotivation: vine.file({
             size: '2mb',
-            extnames: ['jpg', 'jpeg', 'png']
+            extnames: ['jpg', 'jpeg', 'png', 'pdf']
         }).nullable().optional(),
         cv: vine.file({
             size: '2mb',
-            extnames: ['jpg', 'jpeg', 'png']
+            extnames: ['jpg', 'jpeg', 'png', 'pdf']
         }).nullable().optional(),
-        nomCompletGarant: vine.string().trim().toUpperCase().minLength(5).optional(),
-        lienAvecStagiaire: vine.string().trim().toUpperCase().minLength(6).optional(),
-        telephoneGarant: vine.string().trim().fixedLength(10).alphaNumeric().optional(),
-        etablissement: vine.string().trim().toUpperCase().optional(),
-        niveau: vine.string().trim().toUpperCase().optional(),
-        qualification: vine.string().trim().toUpperCase().optional()
+        nomCompletGarant: vine.string().trim().toUpperCase().minLength(5).optional().nullable(),
+        lienAvecStagiaire: vine.string().trim().toUpperCase().minLength(6).optional().nullable(),
+        telephoneGarant: vine.string().trim().fixedLength(10).alphaNumeric().optional().nullable(),
+        etablissement: vine.string().trim().toUpperCase().optional().nullable(),
+        qualification: vine.string().trim().toUpperCase().optional().nullable()
     })
 )

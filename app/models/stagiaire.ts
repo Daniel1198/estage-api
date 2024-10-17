@@ -45,6 +45,9 @@ export default class Stagiaire extends compose(BaseModel, SoftDeletes) {
   declare photo: MultipartFile | null | string
 
   @column()
+  declare pieceIdentite: MultipartFile | null | string
+
+  @column()
   declare lettreMotivation: MultipartFile | null | string
 
   @column()
@@ -61,9 +64,6 @@ export default class Stagiaire extends compose(BaseModel, SoftDeletes) {
 
   @column()
   declare etablissement: string | null
-
-  @column()
-  declare niveau: string | null
 
   @column()
   declare qualification: string | null

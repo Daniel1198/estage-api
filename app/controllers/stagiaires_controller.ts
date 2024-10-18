@@ -13,14 +13,14 @@ export default class StagiairesController {
             if (payload.photo) {
                 const name = `${cuid()}.${payload.photo.extname}`
                 stagiaire.photo = name
-                await payload.photo.move(app.makePath('storage/uploads/stagiaires/photo'), {
+                await payload.photo.move(app.makePath('storage/uploads/avatars'), {
                     name
                 })
             }
             if (payload.lettreMotivation) {
                 const name = `${cuid()}.${payload.lettreMotivation.extname}`
                 stagiaire.lettreMotivation = name
-                await payload.lettreMotivation.move(app.makePath('storage/uploads/stagiaires/documents'), {
+                await payload.lettreMotivation.move(app.makePath('storage/uploads/documents'), {
                     name
                 })
             }

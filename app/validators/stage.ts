@@ -2,21 +2,24 @@ import vine from '@vinejs/vine'
 
 export const storeStageValidator = vine.compile(
     vine.object({
-        type: vine.enum(['PERFECTIONNEMENT', 'VALIDATION', 'IMMERSION']),
+        type: vine.string().toUpperCase().trim(),
         debut: vine.date(),
         fin: vine.date().afterField('debut'),
+        renouvellement: vine.boolean().optional(),
         statut: vine.string().toUpperCase().trim(),
-        stagiaireId: vine.number(),
-        exerciceId: vine.number(),
-        responsableId: vine.number().optional()
+        stagiaireMatricule: vine.string(),
+        entiteId: vine.number(),
+        responsableId: vine.number().optional().nullable()
     })
 )
 
 export const editStageValidator = vine.compile(
     vine.object({
-        type: vine.enum(['PERFECTIONNEMENT', 'VALIDATION', 'IMMERSION']).optional(),
+        type: vine.string().toUpperCase().trim().optional(),
         debut: vine.date().optional().requiredIfExists('fin'),
         fin: vine.date().afterField('debut').optional().requiredIfExists('debut'),
-        responsableId: vine.number().optional()
+        renouvellement: vine.boolean().optional(),
+        responsableId: vine.number().optional().nullable(),
+        entiteId: vine.number().optional()
     })
 )

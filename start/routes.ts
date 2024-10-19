@@ -108,8 +108,10 @@ router.group(() => {
   router.group(() => {
     router.post('', [StagiairesController, 'store'])
     router.get('', [StagiairesController, 'read'])
+    router.get('/news', [StagiairesController, 'readNews'])
+    router.get('/:id/stages', [StagesController, 'findByIntern'])
     router.get('/:id', [StagiairesController, 'find']).where('id', router.matchers.number())
-    router.put('/:id', [StagiairesController, 'edit']).where('id', router.matchers.number())
+    router.put('/:id', [StagiairesController, 'edit'])
     router.delete('/:id', [StagiairesController, 'delete']).where('id', router.matchers.number())
   }).prefix('/stagiaires')
   .use(middleware.auth({

@@ -17,38 +17,27 @@ export default class StagiairesController {
                     name
                 })
             }
-            if (payload.lettreMotivation) {
-                const name = `${cuid()}.${payload.lettreMotivation.extname}`
-                stagiaire.lettreMotivation = name
-                await payload.lettreMotivation.move(app.makePath('storage/uploads/documents'), {
-                    name
-                })
-            }
-            if (payload.cv) {
-                const name = `${cuid()}.${payload.cv.extname}`
-                stagiaire.cv = name
-                await payload.cv.move(app.makePath('storage/uploads/stagiaires/documents'), {
-                    name
-                })
-            }
             const exercice = await Exercice.findByOrFail({ 'active': true })
             const matricule = 'RTI-STG' + exercice.code + ((await Stagiaire.all()).length + 1) + payload.nom.substring(0, 2) + payload.prenom.substring(0, 1)
             stagiaire.matricule = matricule
             stagiaire.nom = payload.nom
             stagiaire.prenom = payload.prenom
+            stagiaire.nomCompletPere = payload.nomCompletPere
+            stagiaire.nomCompletMere = payload.nomCompletMere
             stagiaire.dateNaissance = payload.dateNaissance
-            stagiaire.genre = payload.genre
+            stagiaire.sexe = payload.sexe
             stagiaire.nationalite = payload.nationalite
             stagiaire.situationMatrimoniale = payload.situationMatrimoniale
             stagiaire.telephone = payload.telephone
             stagiaire.email = payload.email!
-            stagiaire.communeQuartier = payload.communeQuartier!
+            stagiaire.lieuResidence = payload.lieuResidence!
             stagiaire.nomCompletGarant = payload.nomCompletGarant!
             stagiaire.lienAvecStagiaire = payload.lienAvecStagiaire!
             stagiaire.telephoneGarant = payload.telephoneGarant!
-            stagiaire.etablissement = payload.etablissement!
-            stagiaire.qualification = payload.qualification!
+            stagiaire.numeroPiece = payload.numeroPiece!
+            stagiaire.competenceProfessionnelle = payload.competenceProfessionnelle!
             stagiaire.statut = payload.statut
+            stagiaire.badgeAttribue = payload.badgeAttribue!
             stagiaire.userId = auth.user?.id!
             stagiaire.save()
             return response.status(201).json({ status: 201, message: 'Stagiaire ajouté avec succès ! ', data: stagiaire })
@@ -60,6 +49,15 @@ export default class StagiairesController {
     async read({ response }: HttpContext) {
         try {
             const stagiaires = await Stagiaire.query().preload('user').preload('stages')
+            return response.status(201).json(stagiaires)
+        } catch (error) {
+            return response.json(error)
+        }
+    }
+
+    async readNews({ response }: HttpContext) {
+        try {
+            const stagiaires = await Stagiaire.query().where({ statut: 'EN SAISIE' }).preload('user').preload('stages')
             return response.status(201).json(stagiaires)
         } catch (error) {
             return response.json(error)
@@ -87,43 +85,32 @@ export default class StagiairesController {
 
     async edit({ request, response }: HttpContext) {
         try {
-            const stagiaire = await Stagiaire.findOrFail(request.params().id)
+            const stagiaire = await Stagiaire.findByOrFail({ matricule: request.params().id })
             const payload = await request.validateUsing(editInternValidator)
             if (payload.photo) {
                 const name = `${cuid()}.${payload.photo.extname}`
                 stagiaire.photo = name
-                await payload.photo.move(app.makePath('storage/uploads/stagiaires/photo'), {
-                    name
-                })
-            }
-            if (payload.lettreMotivation) {
-                const name = `${cuid()}.${payload.lettreMotivation.extname}`
-                stagiaire.lettreMotivation = name
-                await payload.lettreMotivation.move(app.makePath('storage/uploads/stagiaires/documents'), {
-                    name
-                })
-            }
-            if (payload.cv) {
-                const name = `${cuid()}.${payload.cv.extname}`
-                stagiaire.cv = name
-                await payload.cv.move(app.makePath('storage/uploads/stagiaires/documents'), {
+                await payload.photo.move(app.makePath('storage/uploads/avatars'), {
                     name
                 })
             }
             stagiaire.nom = payload.nom!
             stagiaire.prenom = payload.prenom!
+            stagiaire.nomCompletPere = payload.nomCompletPere!
+            stagiaire.nomCompletMere = payload.nomCompletMere!
             stagiaire.dateNaissance = payload.dateNaissance!
-            stagiaire.genre = payload.genre!
+            stagiaire.sexe = payload.sexe!
             stagiaire.nationalite = payload.nationalite!
             stagiaire.situationMatrimoniale = payload.situationMatrimoniale!
             stagiaire.telephone = payload.telephone!
             stagiaire.email = payload.email!
-            stagiaire.communeQuartier = payload.communeQuartier!
+            stagiaire.lieuResidence = payload.lieuResidence!
             stagiaire.nomCompletGarant = payload.nomCompletGarant!
             stagiaire.lienAvecStagiaire = payload.lienAvecStagiaire!
             stagiaire.telephoneGarant = payload.telephoneGarant!
-            stagiaire.etablissement = payload.etablissement!
-            stagiaire.qualification = payload.qualification!
+            stagiaire.numeroPiece = payload.numeroPiece!
+            stagiaire.badgeAttribue = payload.badgeAttribue!
+            stagiaire.competenceProfessionnelle = payload.competenceProfessionnelle!
             stagiaire.save()
             return response.status(201).json({ status: 201, message: 'Informations du stagiaire modifiées avec succès !' })
         } catch (error) {

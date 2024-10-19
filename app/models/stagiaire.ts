@@ -21,10 +21,16 @@ export default class Stagiaire extends compose(BaseModel, SoftDeletes) {
   declare prenom: string
 
   @column()
-  declare dateNaissance: Date
+  declare dateNaissance: Date | null
 
   @column()
-  declare genre: string
+  declare nomCompletPere: string
+
+  @column()
+  declare nomCompletMere: string
+
+  @column()
+  declare sexe: string
 
   @column()
   declare nationalite: string
@@ -39,19 +45,13 @@ export default class Stagiaire extends compose(BaseModel, SoftDeletes) {
   declare email: string
 
   @column()
-  declare communeQuartier: string
+  declare lieuResidence: string
 
   @column()
   declare photo: MultipartFile | null | string
 
   @column()
-  declare pieceIdentite: MultipartFile | null | string
-
-  @column()
-  declare lettreMotivation: MultipartFile | null | string
-
-  @column()
-  declare cv: MultipartFile | null | string
+  declare numeroPiece: null | string
 
   @column()
   declare nomCompletGarant: string | null
@@ -63,13 +63,13 @@ export default class Stagiaire extends compose(BaseModel, SoftDeletes) {
   declare telephoneGarant: string | null
 
   @column()
-  declare etablissement: string | null
-
-  @column()
-  declare qualification: string | null
+  declare competenceProfessionnelle: string | null
 
   @column()
   declare statut: string | null
+
+  @column()
+  declare badgeAttribue: boolean
 
   @column()
   declare userId: number | null

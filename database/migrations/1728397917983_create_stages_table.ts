@@ -10,6 +10,7 @@ export default class extends BaseSchema {
       table.string('type').notNullable()
       table.date('debut').notNullable()
       table.date('fin').notNullable()
+      table.boolean('renouvellement').defaultTo(false)
       table.string('statut').nullable()
       table.integer('exercice_id').unsigned().references('exercices.id').onUpdate('CASCADE').onDelete('CASCADE')
       table.integer('stagiaire_id').unsigned().references('stagiaires.id').onUpdate('CASCADE').onDelete('CASCADE')

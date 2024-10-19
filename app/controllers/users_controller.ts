@@ -32,7 +32,7 @@ export default class UsersController {
                     .subject('Création de compte.')
                     .htmlView('emails/created_account', { username: user.fullName, password, codeUser: user.code })
             })
-            return response.status(201).json({ status: 201, message: 'Utilisateur créé avec succès !', data: user })
+            return response.status(201).json({ status: 201, message: 'Utilisateur créé avec succès ! ', data: user })
         } catch (error) {
             return response.json(error)
         }

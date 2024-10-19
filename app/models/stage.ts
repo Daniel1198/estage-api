@@ -25,6 +25,9 @@ export default class Stage extends compose(BaseModel, SoftDeletes) {
   declare fin: Date
 
   @column()
+  declare renouvellement: boolean
+
+  @column()
   declare statut: string
 
   @column()

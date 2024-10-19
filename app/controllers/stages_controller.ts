@@ -1,5 +1,6 @@
 import Exercice from '#models/exercice';
 import Stage from '#models/stage';
+import Stagiaire from '#models/stagiaire';
 import { editStageValidator, storeStageValidator } from '#validators/stage';
 import type { HttpContext } from '@adonisjs/core/http'
 
@@ -8,15 +9,18 @@ export default class StagesController {
         try {
             const stage = new Stage()
             const payload = await request.validateUsing(storeStageValidator)
-            const exercice = await Exercice.findOrFail(payload.exerciceId)
+            const stagiaire = await Stagiaire.findBy({ matricule: payload.stagiaireMatricule })
+            const exercice = await Exercice.findByOrFail({ active: true })
             const code = 'STG-' + exercice.code + '-' + payload.type.substring(0, 3) + '-' + ((await Stage.all()).length + 1)
             stage.code = code
             stage.type = payload.type
             stage.debut = payload.debut
             stage.fin = payload.fin
+            stage.renouvellement = payload.renouvellement!
             stage.statut = payload.statut
-            stage.stagiaireId = payload.stagiaireId
-            stage.exerciceId = payload.exerciceId
+            stage.stagiaireId = stagiaire?.id!
+            stage.exerciceId = exercice.id
+            stage.entiteId = payload.entiteId
             stage.responsableId = payload.responsableId!
             stage.save()
             return response.status(201).json({ status: 201, message: 'Stage ajouté avec succès !' })
@@ -43,6 +47,16 @@ export default class StagesController {
         }
     }
 
+    async findByIntern({ request, response }: HttpContext) {
+        try {
+            const stagiaire = await Stagiaire.findBy({ matricule: request.params().id })
+            const stages = await Stage.query().where({ 'stagiaireId': stagiaire?.id }).preload('responsable').preload('entite')
+            return response.status(200).json(stages)
+        } catch (error) {
+            return response.json(error)
+        }
+    }
+
     async delete({ request, response }: HttpContext) {
         try {
             const stage = await Stage.findOrFail(request.params().id)
@@ -60,6 +74,8 @@ export default class StagesController {
             stage.type = payload.type!
             stage.debut = payload.debut!
             stage.fin = payload.fin!
+            stage.renouvellement = payload.renouvellement!
+            stage.entiteId = payload.entiteId!
             stage.responsableId = payload.responsableId!
             stage.save()
             return response.status(201).json({ status: 201, message: 'Informations du stage modifiées avec succès !' })

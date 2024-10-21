@@ -57,7 +57,34 @@ export default class StagiairesController {
 
     async readNews({ response }: HttpContext) {
         try {
-            const stagiaires = await Stagiaire.query().where({ statut: 'EN SAISIE' }).preload('user').preload('stages')
+            const stagiaires = await Stagiaire.query().where({ statut: 'EN SAISIE' }).preload('user').preload('stages', (p) => p.preload('entite').orderBy('fin', 'desc'))
+            return response.status(201).json(stagiaires)
+        } catch (error) {
+            return response.json(error)
+        }
+    }
+
+    async readFinished({ response }: HttpContext) {
+        try {
+            const stagiaires = await Stagiaire.query().where({ statut: 'TERMINE' }).preload('user').preload('stages', (p) => p.preload('entite').orderBy('fin', 'desc'))
+            return response.status(201).json(stagiaires)
+        } catch (error) {
+            return response.json(error)
+        }
+    }
+
+    async readActives({ response }: HttpContext) {
+        try {
+            const stagiaires = await Stagiaire.query().where({ statut: 'ACTIF' }).preload('user').preload('stages', (p) => p.preload('entite').orderBy('fin', 'desc'))
+            return response.status(201).json(stagiaires)
+        } catch (error) {
+            return response.json(error)
+        }
+    }
+
+    async readLessOneWeek({ response }: HttpContext) {
+        try {
+            const stagiaires = await Stagiaire.query().where({ statut: 'MOINS 1 SEMAINE' }).preload('user').preload('stages', (p) => p.preload('entite').orderBy('fin', 'desc'))
             return response.status(201).json(stagiaires)
         } catch (error) {
             return response.json(error)

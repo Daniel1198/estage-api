@@ -6,6 +6,9 @@ import { cuid } from '@adonisjs/core/helpers';
 import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app';
 import mail from '@adonisjs/mail/services/main';
+import { errors } from '@vinejs/vine';
+import { errors as err } from '@adonisjs/lucid';
+import { errors as authErrors } from '@adonisjs/auth'
 
 export default class UsersController {
     async store({ request, response }: HttpContext) {
@@ -34,25 +37,43 @@ export default class UsersController {
             })
             return response.status(201).json({ status: 201, message: 'Utilisateur créé avec succès ! ', data: user })
         } catch (error) {
-            return response.json(error)
+            if (error instanceof errors.E_VALIDATION_ERROR) {
+                response.json({ status: 401, message: error.messages[0].message })
+            } else if (error instanceof err.E_ROW_NOT_FOUND) {
+                response.json({ status: 404, message: error.message })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 
     async read({ response }: HttpContext) {
         try {
             const users = await User.query().preload('permissions')
-            return response.status(201).json(users)
+            return response.status(200).json(users)
         } catch (error) {
-            return response.json(error)
+            if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 
     async find({ request, response }: HttpContext) {
         try {
             const user = await User.query().where({ 'id': request.params().id }).preload('permissions').firstOrFail()
-            return response.status(201).json(user)
+            return response.status(200).json(user)
         } catch (error) {
-            return response.json(error)
+            if (error instanceof err.E_ROW_NOT_FOUND) {
+                response.json({ status: 404, message: error.message })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 
@@ -60,9 +81,15 @@ export default class UsersController {
         try {
             const user = await User.findOrFail(request.params().id)
             user.delete()
-            return response.status(201).json({ status: 201, message: 'Utilisateur supprimé avec succès !' })
+            return response.status(200).json({ status: 200, message: 'Utilisateur supprimé avec succès !' })
         } catch (error) {
-            return response.json(error)
+            if (error instanceof err.E_ROW_NOT_FOUND) {
+                response.json({ status: 404, message: error.message })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 
@@ -81,9 +108,17 @@ export default class UsersController {
             user.email = payload.email!
             user.job = payload.job!
             user.save()
-            return response.status(201).json({ status: 201, message: 'Utilisateur modifié avec succès !' })
+            return response.status(200).json({ status: 200, message: 'Utilisateur modifié avec succès !' })
         } catch (error) {
-            return response.json(error)
+            if (error instanceof errors.E_VALIDATION_ERROR) {
+                response.json({ status: 401, message: error.messages[0].message })
+            } else if (error instanceof err.E_ROW_NOT_FOUND) {
+                response.json({ status: 404, message: error.message })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 
@@ -96,7 +131,15 @@ export default class UsersController {
             user.save()
             return response.status(201).json({ status: 201, message: 'Permissions ajoutées avec succès !' })
         } catch (error) {
-            return response.json(error)
+            if (error instanceof errors.E_VALIDATION_ERROR) {
+                response.json({ status: 401, message: error.messages[0].message })
+            } else if (error instanceof err.E_ROW_NOT_FOUND) {
+                response.json({ status: 404, message: error.message })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 
@@ -116,9 +159,15 @@ export default class UsersController {
                 }
                 return p
             })
-            return response.status(201).json(access)
+            return response.status(200).json(access)
         } catch (error) {
-            return response.json(error)
+            if (error instanceof err.E_ROW_NOT_FOUND) {
+                response.json({ status: 404, message: error.message })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 }

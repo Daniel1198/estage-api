@@ -3,6 +3,9 @@ import Entite from '#models/entite';
 import { editChiefValidator, storeChiefValidator } from '#validators/responsable';
 import type { HttpContext } from '@adonisjs/core/http'
 import Responsable from '#models/responsable';
+import { errors } from '@vinejs/vine';
+import { errors as err } from '@adonisjs/lucid';
+import { errors as authErrors } from '@adonisjs/auth'
 
 export default class responsablesController {
     async store({ request, response }: HttpContext) {
@@ -24,25 +27,43 @@ export default class responsablesController {
             responsable.save()
             return response.status(201).json({ status: 201, message: 'Responsable ajouté avec succès !', data: responsable })
         } catch (error) {
-            return response.json(error)
+            if (error instanceof errors.E_VALIDATION_ERROR) {
+                response.json({ status: 401, message: error.messages[0].message })
+            } else if (error instanceof err.E_ROW_NOT_FOUND) {
+                response.json({ status: 404, message: error.message })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 
     async read({ response }: HttpContext) {
         try {
             const responsables = await responsable.query().preload('entite')
-            return response.status(201).json(responsables)
+            return response.status(200).json(responsables)
         } catch (error) {
-            return response.json(error)
+            if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 
     async find({ request, response }: HttpContext) {
         try {
             const responsable = await Responsable.findOrFail(request.params().id)
-            return response.status(201).json(responsable)
+            return response.status(200).json(responsable)
         } catch (error) {
-            return response.json(error)
+            if (error instanceof err.E_ROW_NOT_FOUND) {
+                response.json({ status: 404, message: "Donnée non trouvée" })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 
@@ -50,9 +71,15 @@ export default class responsablesController {
         try {
             const responsable = await Responsable.findOrFail(request.params().id)
             responsable.delete()
-            return response.status(201).json({ status: 201, message: 'Responsable retiré avec succès !' })
+            return response.status(200).json({ status: 200, message: 'Responsable retiré avec succès !' })
         } catch (error) {
-            return response.json(error)
+            if (error instanceof err.E_ROW_NOT_FOUND) {
+                response.json({ status: 404, message: "Donnée non trouvée" })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 
@@ -67,9 +94,17 @@ export default class responsablesController {
             responsable.estDirecteur = payload.estDirecteur!
             responsable.entiteId = payload.entiteId!
             responsable.save()
-            return response.status(201).json({ status: 201, message: 'Informations du responsable modifiées avec succès !' })
+            return response.status(200).json({ status: 200, message: 'Informations du responsable modifiées avec succès !' })
         } catch (error) {
-            return response.json(error)
+            if (error instanceof errors.E_VALIDATION_ERROR) {
+                response.json({ status: 401, message: error.messages[0].message })
+            } else if (error instanceof err.E_ROW_NOT_FOUND) {
+                response.json({ status: 404, message: error.message })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 }

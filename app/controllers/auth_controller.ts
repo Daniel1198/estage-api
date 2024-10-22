@@ -4,6 +4,8 @@ import type { HttpContext } from '@adonisjs/core/http'
 import hash from '@adonisjs/core/services/hash';
 import mail from '@adonisjs/mail/services/main';
 import { DateTime } from 'luxon';
+import { errors as authErrors } from '@adonisjs/auth'
+import { errors } from '@vinejs/vine';
 
 export default class AuthController {
     async login({ request, response }: HttpContext) {
@@ -17,7 +19,11 @@ export default class AuthController {
             })).value?.release()
             return response.status(200).json({ status: 200, message: 'Connexion réussie !', token, data: user })
         } catch (error) {
-            return response.json(error)
+            if (error instanceof authErrors.E_INVALID_CREDENTIALS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 
@@ -25,7 +31,7 @@ export default class AuthController {
         try {
             const user = await User.find(request.params().id)
             if (!user) {
-                return response.status(400).json({ status: 400, message: 'Utilisateur inexistant dans la base de données' })
+                return response.json({ status: 404, message: 'Utilisateur inexistant dans la base de données' })
             }
             const password = Math.random().toString(36).slice(2, 8)
             user.password = password
@@ -36,9 +42,13 @@ export default class AuthController {
                     .subject('Réinitialisation du mot de passe.')
                     .htmlView('emails/password_reset', { username: user.fullName, password })
             })
-            return response.status(201).json({ status: 201, message: 'Mot de passe réinitialisé avec succès !' })
+            return response.status(200).json({ status: 200, message: 'Mot de passe réinitialisé avec succès !' })
         } catch (error) {
-            return response.json(error)
+            if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 
@@ -48,21 +58,27 @@ export default class AuthController {
             const { currentPassword, newPassword } = request.only(['currentPassword', 'newPassword']);
             const user = auth.user
             if (!user) {
-                return response.status(400).json({ status: 400, message: 'Utilisateur inexistant dans la base de données' })
+                return response.json({ status: 404, message: 'Utilisateur inexistant dans la base de données' })
             }
             const isPasswordValid = await hash.verify(user.password, currentPassword)
             if (!isPasswordValid) {
-                return response.status(400).json({ status: 400, message: 'Le mot de passe actuel saisi n\'est pas valide. Veuillez saisir le mot de passe correcte svp !' })
+                return response.json({ status: 404, message: 'Le mot de passe actuel saisi n\'est pas valide. Veuillez saisir le mot de passe correcte svp !' })
             }
 
             if (newPassword === currentPassword) {
-                return response.status(400).json({ status: 400, message: 'Le nouveau mot de passe ne peut être identique au mot de passe actuel. Veuillez saisir un nouveau mot de passe différent svp!' })
+                return response.json({ status: 404, message: 'Le nouveau mot de passe ne peut être identique au mot de passe actuel. Veuillez saisir un nouveau mot de passe différent svp!' })
             }
             user.password = newPassword
             user.save()
-            return response.status(201).json({ status: 201, message: 'Mot de passe changé avec succès !' })
+            return response.status(200).json({ status: 200, message: 'Mot de passe changé avec succès !' })
         } catch (error) {
-            return response.json(error)
+            if (error instanceof errors.E_VALIDATION_ERROR) {
+                response.json({ status: 401, message: error.messages[0].message })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
         }
     }
 }

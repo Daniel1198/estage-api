@@ -10,6 +10,7 @@ const AuthController = () => import('#controllers/auth_controller')
 const PermissionsController = () => import('#controllers/permissions_controller')
 const EntitesController = () => import('#controllers/entites_controller')
 const StagiairesController = () => import('#controllers/stagiaires_controller')
+const NotesController = () => import('#controllers/notes_controller')
 
 router.group(() => {
   // exercices routes
@@ -103,7 +104,8 @@ router.group(() => {
   .use(middleware.auth({
     guards: ['api'],
   }))
-
+  
+  router.post('/note', [NotesController, 'generate'])
   // stagiaires routes
   router.group(() => {
     router.post('', [StagiairesController, 'store'])

@@ -72,7 +72,7 @@ export default class StagiairesController {
 
     async readNews({ response }: HttpContext) {
         try {
-            const stagiaires = await Stagiaire.query().where({ statut: 'EN SAISIE' }).preload('user').preload('stages', (p) => p.preload('entite').orderBy('fin', 'desc'))
+            const stagiaires = await Stagiaire.query().where({ statut: 'EN SAISIE' }).preload('user').preload('stages', (p) => p.preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             return response.status(200).json(stagiaires)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
@@ -85,7 +85,7 @@ export default class StagiairesController {
 
     async readFinished({ response }: HttpContext) {
         try {
-            const stagiaires = await Stagiaire.query().where({ statut: 'TERMINE' }).preload('user').preload('stages', (p) => p.preload('entite').orderBy('fin', 'desc'))
+            const stagiaires = await Stagiaire.query().where({ statut: 'TERMINE' }).preload('user').preload('stages', (p) => p.preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             return response.status(200).json(stagiaires)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
@@ -98,7 +98,7 @@ export default class StagiairesController {
 
     async readActives({ response }: HttpContext) {
         try {
-            const stagiaires = await Stagiaire.query().where({ statut: 'ACTIF' }).preload('user').preload('stages', (p) => p.preload('entite').orderBy('fin', 'desc'))
+            const stagiaires = await Stagiaire.query().where({ statut: 'ACTIF' }).preload('user').preload('stages', (p) => p.preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             return response.status(200).json(stagiaires)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
@@ -111,7 +111,7 @@ export default class StagiairesController {
 
     async readLessOneWeek({ response }: HttpContext) {
         try {
-            const stagiaires = await Stagiaire.query().where({ statut: 'MOINS 1 SEMAINE' }).preload('user').preload('stages', (p) => p.preload('entite').orderBy('fin', 'desc'))
+            const stagiaires = await Stagiaire.query().where({ statut: 'MOINS 1 SEMAINE' }).preload('user').preload('stages', (p) => p.preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             return response.status(200).json(stagiaires)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {

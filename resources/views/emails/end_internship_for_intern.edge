@@ -1,8 +1,8 @@
 @mjml()
 <mjml>
   <mj-head>
-    <mj-title>Création de votre compte utilisateur</mj-title>
-    <mj-preview>Informations de connexion</mj-preview>
+    <mj-title>Rappel fin de stage</mj-title>
+    <mj-preview>Votre stage se termine bientôt</mj-preview>
     <mj-style>
       .header {
         background-color: #1b57b2;
@@ -62,24 +62,14 @@
         
         <!-- Contenu du mail -->
         <mj-text class="content">
-          Bonjour <strong>{{ username }}</strong>,
+          Bonjour <strong>{{ stagiaire }}</strong>,
           <br /><br />
-          Votre compte utilisateur a été créé avec succès. Vous pouvez maintenant vous connecter en utilisant les informations suivantes :
-        </mj-text>
-        
-        <!-- Nom d'utilisateur mis en valeur -->
-        <mj-text class="info-box">
-          Nom d'utilisateur : <strong>{{ codeUser }}</strong>
-        </mj-text>
-        
-        <!-- Mot de passe mis en valeur -->
-        <mj-text class="info-box">
-          Mot de passe : <strong>{{ password }}</strong>
+          Nous tenons à vous rappeler que votre stage touche à sa fin dans quelques jours. La date de fin de votre stage est le <strong>{{ dateFin }}</strong>.
         </mj-text>
         
         <!-- Texte supplémentaire -->
         <mj-text class="content">
-          Veuillez changer votre mot de passe lors de votre première connexion pour des raisons de sécurité.
+          Nous espérons que votre expérience au sein de notre équipe a été enrichissante et que vous avez pu acquérir de nouvelles compétences. Nous restons à votre disposition pour toute question ou préparation de votre départ.
         </mj-text>
         
         <!-- Footer -->

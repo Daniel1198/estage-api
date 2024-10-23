@@ -1,8 +1,8 @@
 @mjml()
 <mjml>
   <mj-head>
-    <mj-title>Création de votre compte utilisateur</mj-title>
-    <mj-preview>Informations de connexion</mj-preview>
+    <mj-title>Fin de stage de {{ stagiaire }}</mj-title>
+    <mj-preview>Informations sur la fin de stage de {{ stagiaire }}</mj-preview>
     <mj-style>
       .header {
         background-color: #1b57b2;
@@ -62,24 +62,19 @@
         
         <!-- Contenu du mail -->
         <mj-text class="content">
-          Bonjour <strong>{{ username }}</strong>,
+          Bonjour <strong>{{ responsable }}</strong>,
           <br /><br />
-          Votre compte utilisateur a été créé avec succès. Vous pouvez maintenant vous connecter en utilisant les informations suivantes :
+          Nous vous informons que le stage de <strong>{{ stagiaire }}</strong> prend fin aujourd'hui à 18h00.
         </mj-text>
-        
-        <!-- Nom d'utilisateur mis en valeur -->
-        <mj-text class="info-box">
-          Nom d'utilisateur : <strong>{{ codeUser }}</strong>
+
+        <!-- Section des actions à effectuer -->
+        <mj-text class="content">
+          Nous vous invitons à évaluer son stage et à partager vos retours d'expérience. Si des actions supplémentaires sont requises, comme la préparation de son certificat de stage ou l'organisation d'un entretien final ou même le renouvellement du stage.
         </mj-text>
-        
-        <!-- Mot de passe mis en valeur -->
-        <mj-text class="info-box">
-          Mot de passe : <strong>{{ password }}</strong>
-        </mj-text>
-        
+
         <!-- Texte supplémentaire -->
         <mj-text class="content">
-          Veuillez changer votre mot de passe lors de votre première connexion pour des raisons de sécurité.
+          Nous vous remercions pour votre suivi et accompagnement tout au long de ce stage. N'hésitez pas à nous contacter pour toute information complémentaire.
         </mj-text>
         
         <!-- Footer -->
@@ -90,5 +85,4 @@
     </mj-section>
   </mj-body>
 </mjml>
-
 @end

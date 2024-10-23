@@ -1,0 +1,153 @@
+@mjml()
+<mjml>
+  <mj-head>
+    <mj-title>Fin de stage approchant pour {{ stagiaire }}</mj-title>
+    <mj-preview>Alerte : Préparation des documents pour {{ stagiaire }}</mj-preview>
+    <mj-style>
+      .header {
+        background-color: #1b57b2;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        font-size: 22px;
+        font-weight: bold;
+      }
+      .content {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 0 0 10px 10px;
+        border: 1px solid #ddd;
+        font-size: 16px;
+        color: #333;
+        line-height: 1.6;
+      }
+      .info-box {
+        background-color: #f4f6fb;
+        color: #333;
+        padding: 20px;
+        text-align: center;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 18px;
+        margin: 20px 0;
+        border: 2px solid #1b57b2;
+      }
+      .footer {
+        font-size: 12px;
+        color: #888;
+        text-align: center;
+        padding: 20px;
+        border-top: 1px solid #eee;
+      }
+      .logo {
+        width: 100px;
+        margin-bottom: 20px;
+      }
+      .container {
+        background-color: #f0f0f0;
+        padding: 40px;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body>
+    <mj-section background-color="#f0f0f0" padding="20px 0">
+      <mj-column>
+        <!-- Logo de l'entreprise -->
+        <mj-image src="http://localhost:3333/logos/ton-logo.svg" alt="Logo de l'entreprise" class="logo" width="100px"></mj-image>
+
+        <!-- Contenu du mail -->
+        <mj-text class="content">
+          Bonjour <strong>{{ responsable }}</strong>,
+          <br /><br />
+          Nous vous informons que le stage de <strong>{{ stagiaire }}</strong> prend fin aujourd'hui à 18h00.
+        </mj-text>
+
+        <!-- Footer -->
+        <mj-text class="footer">
+          © 2024 Radiodiffusion Télévision Ivoirienne. Tous droits réservés.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+  <mjml>
+    <mj-head>
+      <mj-title>Fin de stage aujourd'hui pour {{ stagiaire }}</mj-title>
+      <mj-preview>Le stage de {{ stagiaire }} prend fin aujourd'hui</mj-preview>
+      <mj-style>
+        .header {
+          background-color: #1b57b2;
+          color: white;
+          padding: 20px;
+          text-align: center;
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
+          font-size: 22px;
+          font-weight: bold;
+        }
+        .content {
+          background-color: #ffffff;
+          padding: 30px;
+          border-radius: 0 0 10px 10px;
+          border: 1px solid #ddd;
+          font-size: 16px;
+          color: #333;
+          line-height: 1.6;
+        }
+        .info-box {
+          background-color: #f4f6fb;
+          color: #333;
+          padding: 20px;
+          text-align: center;
+          border-radius: 8px;
+          font-weight: bold;
+          font-size: 18px;
+          margin: 20px 0;
+          border: 2px solid #1b57b2;
+        }
+        .footer {
+          font-size: 12px;
+          color: #888;
+          text-align: center;
+          padding: 20px;
+          border-top: 1px solid #eee;
+        }
+        .logo {
+          width: 100px;
+          margin-bottom: 20px;
+        }
+        .container {
+          background-color: #f0f0f0;
+          padding: 40px;
+          border-radius: 12px;
+          border: 1px solid #ddd;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+      </mj-style>
+    </mj-head>
+    <mj-body>
+      <mj-section background-color="#f0f0f0" padding="20px 0">
+        <mj-column>
+          <!-- Logo de l'entreprise -->
+          <mj-image src="http://localhost:3333/logos/ton-logo.svg" alt="Logo de l'entreprise" class="logo" width="100px"></mj-image>
+  
+          <!-- Contenu du mail -->
+          <mj-text class="content">
+            Bonjour <strong>[Nom du Responsable RH]</strong>,
+            <br /><br />
+            Le stage de <strong>{{ stagiaire }}</strong> prend fin aujourd'hui, le <strong>[Date d'Aujourd'hui]</strong>.
+          </mj-text>
+  
+          <!-- Footer -->
+          <mj-text class="footer">
+            © 2024 Radiodiffusion Télévision Ivoirienne. Tous droits réservés.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-body>
+  </mjml>  
+@end

@@ -12,12 +12,13 @@ export default class AuthController {
         try {
             const { code, password } = request.only(['code', 'password']);
             const user = await User.verifyCredentials(code, password)
+            const permissions = (await User.query().where({ code }).preload('permissions').first())?.permissions
             user.connectedAt = DateTime.now()
             user.save()
             const token = (await User.accessTokens.create(user, ['*'], {
                 expiresIn: '1h',
             })).value?.release()
-            return response.status(200).json({ status: 200, message: 'Connexion réussie !', token, data: user })
+            return response.status(200).json({ status: 200, message: 'Connexion réussie !', token, data: { ...user.toJSON(), permissions } })
         } catch (error) {
             if (error instanceof authErrors.E_INVALID_CREDENTIALS) {
                 response.json({ status: 401, message: error.message })

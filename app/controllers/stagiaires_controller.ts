@@ -7,6 +7,8 @@ import app from '@adonisjs/core/services/app'
 import { errors } from '@vinejs/vine'
 import { errors as err } from '@adonisjs/lucid'
 import { errors as authErrors } from '@adonisjs/auth'
+import { searchInternValidator } from '#validators/recherche'
+import moment from 'moment'
 
 export default class StagiairesController {
     async store({ request, response, auth }: HttpContext) {
@@ -63,6 +65,69 @@ export default class StagiairesController {
             return response.status(200).json(stagiaires)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
+        }
+    }
+
+    async search({ response, request }: HttpContext) {
+        try {
+            const payload = await request.validateUsing(searchInternValidator)
+            const stagiaires = await Stagiaire.query()
+                .preload('user')
+                .preload('stages', (p) => p.preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
+            
+                let result: Stagiaire[] = stagiaires
+            if (payload.matricule)
+                result = result.filter((stg) => stg.matricule === payload.matricule)
+            if (payload.nom)
+                result = result.filter((stg) => stg.nom === payload.nom)
+            if (payload.prenom)
+                result = result.filter((stg) => stg.prenom === payload.prenom)
+            if (payload.sexe)
+                result = result.filter((stg) => stg.sexe === payload.sexe)
+            if (payload.nationalite)
+                result = result.filter((stg) => stg.nationalite === payload.nationalite)
+            if (payload.situationMatrimoniale)
+                result = result.filter((stg) => stg.situationMatrimoniale === payload.situationMatrimoniale)
+            if (payload.qualification)
+                result = result.filter((stg) => stg.competenceProfessionnelle?.includes(payload.qualification!))
+            if (payload.residence)
+                result = result.filter((stg) => stg.lieuResidence?.includes(payload.residence!))
+            if (payload.badgeAttribue)
+                result = result.filter((stg) => stg.badgeAttribue)
+            if (payload.statut)
+                result = result.filter((stg) => stg.statut === payload.statut)
+            if (payload.typeStage)
+                result = result.filter((stg) => stg.stages[0].type === payload.typeStage)
+            if (payload.debut)
+                result = result.filter((stg) => moment(stg.stages[0].debut).diff(moment(payload.debut), 'days') === 0)
+            if (payload.fin)
+                result = result.filter((stg) => moment(stg.stages[0].fin).diff(moment(payload.fin), 'days') === 0)
+            if (payload.entite)
+                result = result.filter((stg) => stg.stages[0].entite.id === payload.entite)
+            if (payload.responsable)
+                result = result.filter((stg) => stg.stages[0].responsable.id === payload.responsable)
+            if (payload.ageMin) {
+                result = result.filter((stg) => {
+                    const age = new Date().getFullYear() - new Date(stg.dateNaissance!).getFullYear()
+                    return age >= payload.ageMin!
+                })
+            }
+            if (payload.ageMax) {
+                result = result.filter((stg) => {
+                    const age = new Date().getFullYear() - new Date(stg.dateNaissance!).getFullYear()
+                    return age <= payload.ageMax!
+                })
+            }
+
+            return response.status(200).json(result)
+        } catch (error) {
+            if (error instanceof errors.E_VALIDATION_ERROR) {
+                response.json({ status: 401, message: error.messages[0].message })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
                 response.json({ status: 401, message: error.message })
             } else {
                 response.json(error)

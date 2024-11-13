@@ -109,6 +109,7 @@ router.group(() => {
   // stagiaires routes
   router.group(() => {
     router.post('', [StagiairesController, 'store'])
+    router.post('/search', [StagiairesController, 'search'])
     router.get('', [StagiairesController, 'read'])
     router.get('/news', [StagiairesController, 'readNews'])
     router.get('/actives', [StagiairesController, 'readActives'])

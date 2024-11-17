@@ -117,6 +117,7 @@ router.group(() => {
     router.get('/finished', [StagiairesController, 'readFinished'])
     router.get('/:id/stages', [StagesController, 'findByIntern'])
     router.get('/:id', [StagiairesController, 'find']).where('id', router.matchers.number())
+    router.get('/assign-badge/:id', [StagiairesController, 'assignBadge']).where('id', router.matchers.number())
     router.put('/:id', [StagiairesController, 'edit'])
     router.delete('/:id', [StagiairesController, 'delete']).where('id', router.matchers.number())
   }).prefix('/stagiaires')

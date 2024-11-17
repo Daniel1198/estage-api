@@ -260,4 +260,21 @@ export default class StagiairesController {
             }
         }
     }
+
+    async assignBadge({ request, response }: HttpContext) {
+        try {
+            const stagiaire = await Stagiaire.findOrFail(request.params().id)
+            stagiaire.badgeAttribue = !stagiaire.badgeAttribue
+            stagiaire.save()
+            return response.status(200).json({ status: 200, message: stagiaire.badgeAttribue ? 'Badge attribué avec succès !' : 'Badge récupéré avec succès !' })
+        } catch (error) {
+            if (error instanceof err.E_ROW_NOT_FOUND) {
+                response.json({ status: 404, message: "Donnée non trouvée" })
+            } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+                response.json({ status: 401, message: error.message })
+            } else {
+                response.json(error)
+            }
+        }
+    }
 }

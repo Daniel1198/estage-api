@@ -16,6 +16,7 @@ export default class extends BaseSchema {
       table.integer('stagiaire_id').unsigned().references('stagiaires.id').onUpdate('CASCADE').onDelete('CASCADE')
       table.integer('responsable_id').unsigned().references('responsables.id').onUpdate('CASCADE').onDelete('CASCADE')
       table.integer('entite_id').unsigned().references('entites.id').onUpdate('CASCADE').onDelete('CASCADE')
+      table.integer('type_stage_id').unsigned().references('types_stage.id').onUpdate('CASCADE').onDelete('CASCADE')
       table.timestamp('created_at')
       table.timestamp('updated_at')
       table.timestamp('deleted_at').nullable()

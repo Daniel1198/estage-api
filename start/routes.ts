@@ -11,6 +11,7 @@ const PermissionsController = () => import('#controllers/permissions_controller'
 const EntitesController = () => import('#controllers/entites_controller')
 const StagiairesController = () => import('#controllers/stagiaires_controller')
 const NotesController = () => import('#controllers/notes_controller')
+const TypesStageController = () => import('#controllers/type_stages_controller')
 
 router.group(() => {
   // exercices routes
@@ -61,6 +62,18 @@ router.group(() => {
     router.put('/:id', [ModelesController, 'edit']).where('id', router.matchers.number())
     router.delete('/:id', [ModelesController, 'delete']).where('id', router.matchers.number())
   }).prefix('/modeles')
+  .use(middleware.auth({
+    guards: ['api'],
+  }))
+
+  // types de stage routes
+  router.group(() => {
+    router.post('', [TypesStageController, 'store'])
+    router.get('', [TypesStageController, 'read'])
+    router.get('/:id', [TypesStageController, 'find']).where('id', router.matchers.number())
+    router.put('/:id', [TypesStageController, 'edit']).where('id', router.matchers.number())
+    router.delete('/:id', [TypesStageController, 'delete']).where('id', router.matchers.number())
+  }).prefix('/types-stage')
   .use(middleware.auth({
     guards: ['api'],
   }))

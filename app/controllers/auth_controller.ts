@@ -21,7 +21,7 @@ export default class AuthController {
             return response.status(200).json({ status: 200, message: 'Connexion réussie !', token, data: { ...user.toJSON(), permissions } })
         } catch (error) {
             if (error instanceof authErrors.E_INVALID_CREDENTIALS) {
-                response.json({ status: 401, message: error.message })
+                response.json({ status: 401, message: "Nom d'utilisateur ou mot de passe incorrecte" })
             } else {
                 response.json(error)
             }

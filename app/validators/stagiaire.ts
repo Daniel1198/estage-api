@@ -20,7 +20,6 @@ export const storeInternValidator = vine.compile(
             size: '2mb',
             extnames: ['jpg', 'jpeg', 'png']
         }).nullable().optional(),
-        badgeAttribue: vine.boolean().optional(),
         numeroPiece: vine.string().trim().toUpperCase().minLength(5).optional().nullable(),
         nomCompletGarant: vine.string().trim().toUpperCase().minLength(5).optional().nullable(),
         lienAvecStagiaire: vine.string().trim().toUpperCase().optional().nullable(),
@@ -47,7 +46,6 @@ export const editInternValidator = vine.compile(
             size: '2mb',
             extnames: ['jpg', 'jpeg', 'png']
         }).nullable().optional(),
-        badgeAttribue: vine.boolean().optional(),
         numeroPiece: vine.string().trim().toUpperCase().minLength(5).optional().nullable(),
         nomCompletPere: vine.string().trim().toUpperCase().minLength(5).optional(),
         nomCompletMere: vine.string().trim().toUpperCase().minLength(5).optional(),
@@ -55,5 +53,11 @@ export const editInternValidator = vine.compile(
         lienAvecStagiaire: vine.string().trim().toUpperCase().optional().nullable(),
         telephoneGarant: vine.string().trim().fixedLength(10).alphaNumeric().optional().nullable(),
         competenceProfessionnelle: vine.string().trim().toUpperCase().optional().nullable()
+    })
+)
+
+export const assignBadgeValidator = vine.compile(
+    vine.object({
+        numeroBadge: vine.string().alphaNumeric().trim().toUpperCase()
     })
 )

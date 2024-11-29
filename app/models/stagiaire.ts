@@ -69,7 +69,7 @@ export default class Stagiaire extends compose(BaseModel, SoftDeletes) {
   declare statut: string | null
 
   @column()
-  declare badgeAttribue: boolean
+  declare numeroBadge: string | null
 
   @column()
   declare userId: number | null

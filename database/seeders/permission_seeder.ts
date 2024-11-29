@@ -40,6 +40,7 @@ export default class extends BaseSeeder {
       { code: 'SHOW_DETAILS_INTERNSHIP', intitule: 'Afficher les détails d’un stage' },
       { code: 'ACCESS_DASHBOARD', intitule: 'Accéder au tableau de bord' },
       { code: 'ACCESS_SEARCH', intitule: 'Accéder à la recherche' },
+      { code: 'ACCESS_SETTINGS', intitule: 'Accéder aux paramètres' },
     ])
   }
 }

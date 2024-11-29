@@ -7,7 +7,6 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('code').unique().notNullable()
-      table.string('type').notNullable()
       table.date('debut').notNullable()
       table.date('fin').notNullable()
       table.boolean('renouvellement').defaultTo(false)

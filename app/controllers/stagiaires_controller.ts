@@ -1,6 +1,6 @@
 import Exercice from '#models/exercice'
 import Stagiaire from '#models/stagiaire'
-import { editInternValidator, storeInternValidator } from '#validators/stagiaire'
+import { assignBadgeValidator, editInternValidator, storeInternValidator } from '#validators/stagiaire'
 import { cuid } from '@adonisjs/core/helpers'
 import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
@@ -42,7 +42,6 @@ export default class StagiairesController {
             stagiaire.numeroPiece = payload.numeroPiece!
             stagiaire.competenceProfessionnelle = payload.competenceProfessionnelle!
             stagiaire.statut = payload.statut
-            stagiaire.badgeAttribue = payload.badgeAttribue!
             stagiaire.userId = auth.user?.id!
             stagiaire.save()
             return response.status(201).json({ status: 201, message: 'Stagiaire ajouté avec succès ! ', data: stagiaire })
@@ -97,11 +96,11 @@ export default class StagiairesController {
             if (payload.residence)
                 result = result.filter((stg) => stg.lieuResidence?.includes(payload.residence!))
             if (payload.badgeAttribue)
-                result = result.filter((stg) => stg.badgeAttribue)
+                result = result.filter((stg) => stg.numeroBadge)
             if (payload.statut)
                 result = result.filter((stg) => stg.statut === payload.statut)
-            if (payload.typeStage)
-                result = result.filter((stg) => stg.stages[0].type === payload.typeStage)
+            if (payload.typeStageId)
+                result = result.filter((stg) => stg.stages[0].typeStage.id === payload.typeStageId)
             if (payload.debut)
                 result = result.filter((stg) => moment(stg.stages[0].debut).diff(moment(payload.debut), 'days') === 0)
             if (payload.fin)
@@ -244,7 +243,6 @@ export default class StagiairesController {
             stagiaire.lienAvecStagiaire = payload.lienAvecStagiaire!
             stagiaire.telephoneGarant = payload.telephoneGarant!
             stagiaire.numeroPiece = payload.numeroPiece!
-            stagiaire.badgeAttribue = payload.badgeAttribue!
             stagiaire.competenceProfessionnelle = payload.competenceProfessionnelle!
             stagiaire.save()
             return response.status(200).json({ status: 200, message: 'Informations du stagiaire modifiées avec succès !' })
@@ -264,9 +262,10 @@ export default class StagiairesController {
     async assignBadge({ request, response }: HttpContext) {
         try {
             const stagiaire = await Stagiaire.findOrFail(request.params().id)
-            stagiaire.badgeAttribue = !stagiaire.badgeAttribue
+            const payload = await request.validateUsing(assignBadgeValidator)
+            stagiaire.numeroBadge = payload.numeroBadge
             stagiaire.save()
-            return response.status(200).json({ status: 200, message: stagiaire.badgeAttribue ? 'Badge attribué avec succès !' : 'Badge récupéré avec succès !' })
+            return response.status(200).json({ status: 200, message: stagiaire.numeroBadge ? 'Badge attribué avec succès !' : 'Badge récupéré avec succès !' })
         } catch (error) {
             if (error instanceof err.E_ROW_NOT_FOUND) {
                 response.json({ status: 404, message: "Donnée non trouvée" })

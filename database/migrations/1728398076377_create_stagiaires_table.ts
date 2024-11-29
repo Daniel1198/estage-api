@@ -25,7 +25,7 @@ export default class extends BaseSchema {
       table.string('telephone_garant').nullable()
       table.string('competence_professionnelle').nullable()
       table.string('statut').nullable()
-      table.boolean('badge_attribue').defaultTo(false)
+      table.string('numero_badge').nullable()
       table.integer('user_id').unsigned().references('users.id').onUpdate('CASCADE').onDelete('CASCADE')
       table.timestamp('created_at')
       table.timestamp('updated_at')

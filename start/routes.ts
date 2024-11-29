@@ -12,6 +12,8 @@ const EntitesController = () => import('#controllers/entites_controller')
 const StagiairesController = () => import('#controllers/stagiaires_controller')
 const NotesController = () => import('#controllers/notes_controller')
 const TypesStageController = () => import('#controllers/type_stages_controller')
+const ParametreController = () => import('#controllers/parametres_controller')
+const NotificationEmailsController = () => import('#controllers/notification_emails_controller')
 
 router.group(() => {
   // exercices routes
@@ -36,6 +38,16 @@ router.group(() => {
     router.put('/:id', [EntitesController, 'edit']).where('id', router.matchers.number())
     router.delete('/:id', [EntitesController, 'delete']).where('id', router.matchers.number())
   }).prefix('/entites')
+  .use(middleware.auth({
+    guards: ['api'],
+  }))
+
+  // notification emails routes
+  router.group(() => {
+    router.post('', [NotificationEmailsController, 'store'])
+    router.get('', [NotificationEmailsController, 'read'])
+    router.delete('/:id', [NotificationEmailsController, 'delete']).where('id', router.matchers.number())
+  }).prefix('/notification_emails')
   .use(middleware.auth({
     guards: ['api'],
   }))
@@ -102,6 +114,15 @@ router.group(() => {
     router.put('/:id', [UsersController, 'edit']).where('id', router.matchers.number())
     router.delete('/:id', [UsersController, 'delete']).where('id', router.matchers.number())
   }).prefix('/users')
+  // .use(middleware.auth({
+  //   guards: ['api'],
+  // }))
+
+  // parametres routes
+  router.group(() => {
+    router.post('', [ParametreController, 'store'])
+    router.get('', [ParametreController, 'read'])
+  }).prefix('/settings')
   .use(middleware.auth({
     guards: ['api'],
   }))
@@ -130,7 +151,7 @@ router.group(() => {
     router.get('/finished', [StagiairesController, 'readFinished'])
     router.get('/:id/stages', [StagesController, 'findByIntern'])
     router.get('/:id', [StagiairesController, 'find']).where('id', router.matchers.number())
-    router.get('/assign-badge/:id', [StagiairesController, 'assignBadge']).where('id', router.matchers.number())
+    router.post('/assign-badge/:id', [StagiairesController, 'assignBadge']).where('id', router.matchers.number())
     router.put('/:id', [StagiairesController, 'edit'])
     router.delete('/:id', [StagiairesController, 'delete']).where('id', router.matchers.number())
   }).prefix('/stagiaires')

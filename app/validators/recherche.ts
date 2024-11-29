@@ -11,7 +11,7 @@ export const searchInternValidator = vine.compile(
         residence: vine.string().trim().toUpperCase().optional(),
         badgeAttribue: vine.boolean().optional(),
         qualification: vine.string().trim().toUpperCase().optional().optional(),
-        typeStage: vine.string().trim().toUpperCase().optional().optional(),
+        typeStageId: vine.number().positive(),
         statut: vine.string().toUpperCase().trim().optional(),
         entite: vine.number().optional(),
         responsable: vine.number().optional(),

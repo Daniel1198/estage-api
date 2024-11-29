@@ -6,6 +6,7 @@ import mail from '@adonisjs/mail/services/main';
 import { DateTime } from 'luxon';
 import { errors as authErrors } from '@adonisjs/auth'
 import { errors } from '@vinejs/vine';
+import Parametre from '#models/parametre';
 
 export default class AuthController {
     async login({ request, response }: HttpContext) {
@@ -13,12 +14,13 @@ export default class AuthController {
             const { code, password } = request.only(['code', 'password']);
             const user = await User.verifyCredentials(code, password)
             const permissions = (await User.query().where({ code }).preload('permissions').first())?.permissions
+            const parametreDrhName = (await Parametre.findBy({ code: 'DRH_NAME' }))
             user.connectedAt = DateTime.now()
             user.save()
             const token = (await User.accessTokens.create(user, ['*'], {
                 expiresIn: '1h',
             })).value?.release()
-            return response.status(200).json({ status: 200, message: 'Connexion réussie !', token, data: { ...user.toJSON(), permissions } })
+            return response.status(200).json({ status: 200, message: 'Connexion réussie !', token, data: { ...user.toJSON(), permissions }, drhName: parametreDrhName?.valeur })
         } catch (error) {
             if (error instanceof authErrors.E_INVALID_CREDENTIALS) {
                 response.json({ status: 401, message: "Nom d'utilisateur ou mot de passe incorrecte" })

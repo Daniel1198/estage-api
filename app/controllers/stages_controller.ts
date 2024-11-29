@@ -6,6 +6,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { errors } from '@vinejs/vine';
 import { errors as err } from '@adonisjs/lucid';
 import { errors as authErrors } from '@adonisjs/auth'
+import TypeStage from '#models/type_stage';
 
 export default class StagesController {
     async store({ request, response }: HttpContext) {
@@ -22,9 +23,10 @@ export default class StagesController {
                 return response.json({ status: 401, message: 'Un stage est actif pour le stagiaire. Veuillez attendre la fin du stage avant de procéder à l\'enregistrement d\'une nouvelle période.' })
             }
             const exercice = await Exercice.findByOrFail({ active: true })
-            const code = 'STG-' + exercice.code + '-' + payload.type.substring(0, 3) + '-' + ((await Stage.all()).length + 1)
+            const typeStage = await TypeStage.find(payload.typeStageId)
+            const code = 'STG-' + exercice.code + '-' + typeStage?.intitule.substring(0, 3) + '-' + ((await Stage.all()).length + 1)
             stage.code = code
-            stage.type = payload.type
+            stage.typeStageId = payload.typeStageId
             stage.debut = payload.debut
             stage.fin = payload.fin
             stage.renouvellement = payload.renouvellement!
@@ -112,7 +114,6 @@ export default class StagesController {
         try {
             const stage = await Stage.findOrFail(request.params().id)
             const payload = await request.validateUsing(editStageValidator)
-            stage.type = payload.type!
             stage.debut = payload.debut!
             stage.fin = payload.fin!
             stage.renouvellement = payload.renouvellement!

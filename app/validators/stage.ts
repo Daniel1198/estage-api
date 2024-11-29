@@ -2,7 +2,7 @@ import vine from '@vinejs/vine'
 
 export const storeStageValidator = vine.compile(
     vine.object({
-        type: vine.string().toUpperCase().trim(),
+        typeStageId: vine.number().positive(),
         debut: vine.date(),
         fin: vine.date().afterField('debut'),
         renouvellement: vine.boolean().optional(),
@@ -15,7 +15,6 @@ export const storeStageValidator = vine.compile(
 
 export const editStageValidator = vine.compile(
     vine.object({
-        type: vine.string().toUpperCase().trim().optional(),
         debut: vine.date().optional().requiredIfExists('fin'),
         fin: vine.date().afterField('debut').optional().requiredIfExists('debut'),
         renouvellement: vine.boolean().optional(),

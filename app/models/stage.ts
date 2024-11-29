@@ -7,6 +7,7 @@ import { SoftDeletes } from 'adonis-lucid-soft-deletes'
 import { compose } from '@adonisjs/core/helpers'
 import Entite from './entite.js'
 import Responsable from './responsable.js'
+import TypeStage from './type_stage.js'
 
 export default class Stage extends compose(BaseModel, SoftDeletes) {
   @column({ isPrimary: true })
@@ -14,9 +15,6 @@ export default class Stage extends compose(BaseModel, SoftDeletes) {
 
   @column()
   declare code: string
-
-  @column()
-  declare type: string
 
   @column()
   declare debut: Date
@@ -53,6 +51,12 @@ export default class Stage extends compose(BaseModel, SoftDeletes) {
 
   @belongsTo(() => Responsable)
   declare responsable: BelongsTo<typeof Responsable>
+
+  @column()
+  declare typeStageId: number
+
+  @belongsTo(() => TypeStage)
+  declare typeStage: BelongsTo<typeof TypeStage>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

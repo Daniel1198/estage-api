@@ -14,6 +14,7 @@ const NotesController = () => import('#controllers/notes_controller')
 const TypesStageController = () => import('#controllers/type_stages_controller')
 const ParametreController = () => import('#controllers/parametres_controller')
 const NotificationEmailsController = () => import('#controllers/notification_emails_controller')
+const TableauBordsController = () => import('#controllers/tableau_bords_controller')
 
 router.group(() => {
   // exercices routes
@@ -47,7 +48,15 @@ router.group(() => {
     router.post('', [NotificationEmailsController, 'store'])
     router.get('', [NotificationEmailsController, 'read'])
     router.delete('/:id', [NotificationEmailsController, 'delete']).where('id', router.matchers.number())
-  }).prefix('/notification_emails')
+  }).prefix('/notification-emails')
+  .use(middleware.auth({
+    guards: ['api'],
+  }))
+
+  // tableau de bord routes
+  router.group(() => {
+    router.get('', [TableauBordsController, 'read'])
+  }).prefix('/dashboard')
   .use(middleware.auth({
     guards: ['api'],
   }))

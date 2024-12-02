@@ -58,6 +58,6 @@ export const editInternValidator = vine.compile(
 
 export const assignBadgeValidator = vine.compile(
     vine.object({
-        numeroBadge: vine.string().alphaNumeric().trim().toUpperCase()
+        numeroBadge: vine.string().alphaNumeric().trim().toUpperCase().nullable().optional()
     })
 )

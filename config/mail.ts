@@ -10,8 +10,8 @@ const mailConfig = defineConfig({
    * options.
   */
   from: {
-    address: 'notificationrti@rti.ci',
-    name: 'Informations eStage.',
+    address: env.get('SMTP_USERNAME')!,
+    name: env.get('SMTP_NAME')!,
   },
   mailers: {
     smtp: transports.smtp({

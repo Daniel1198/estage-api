@@ -76,7 +76,7 @@ export default class StagiairesController {
             const payload = await request.validateUsing(searchInternValidator)
             const stagiaires = await Stagiaire.query()
                 .preload('user')
-                .preload('stages', (p) => p.preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
+                .preload('stages', (p) => p.preload('typeStage').preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             
                 let result: Stagiaire[] = stagiaires
             if (payload.matricule)
@@ -136,7 +136,7 @@ export default class StagiairesController {
 
     async readNews({ response }: HttpContext) {
         try {
-            const stagiaires = await Stagiaire.query().where({ statut: 'EN SAISIE' }).preload('user').preload('stages', (p) => p.preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
+            const stagiaires = await Stagiaire.query().where({ statut: 'EN SAISIE' }).preload('user').preload('stages', (p) => p.preload('typeStage').preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             return response.status(200).json(stagiaires)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
@@ -149,7 +149,7 @@ export default class StagiairesController {
 
     async readFinished({ response }: HttpContext) {
         try {
-            const stagiaires = await Stagiaire.query().where({ statut: 'TERMINE' }).preload('user').preload('stages', (p) => p.preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
+            const stagiaires = await Stagiaire.query().where({ statut: 'TERMINE' }).preload('user').preload('stages', (p) => p.preload('typeStage').preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             return response.status(200).json(stagiaires)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
@@ -162,7 +162,7 @@ export default class StagiairesController {
 
     async readActives({ response }: HttpContext) {
         try {
-            const stagiaires = await Stagiaire.query().where({ statut: 'ACTIF' }).preload('user').preload('stages', (p) => p.preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
+            const stagiaires = await Stagiaire.query().where({ statut: 'ACTIF' }).preload('user').preload('stages', (p) => p.preload('typeStage').preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             return response.status(200).json(stagiaires)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
@@ -175,7 +175,7 @@ export default class StagiairesController {
 
     async readLessOneWeek({ response }: HttpContext) {
         try {
-            const stagiaires = await Stagiaire.query().where({ statut: 'MOINS 1 SEMAINE' }).preload('user').preload('stages', (p) => p.preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
+            const stagiaires = await Stagiaire.query().where({ statut: 'MOINS 1 SEMAINE' }).preload('user').preload('stages', (p) => p.preload('typeStage').preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             return response.status(200).json(stagiaires)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
@@ -263,11 +263,15 @@ export default class StagiairesController {
         try {
             const stagiaire = await Stagiaire.findOrFail(request.params().id)
             const payload = await request.validateUsing(assignBadgeValidator)
-            stagiaire.numeroBadge = payload.numeroBadge
+
+            stagiaire.numeroBadge = payload.numeroBadge!
+            
             stagiaire.save()
             return response.status(200).json({ status: 200, message: stagiaire.numeroBadge ? 'Badge attribué avec succès !' : 'Badge récupéré avec succès !' })
         } catch (error) {
-            if (error instanceof err.E_ROW_NOT_FOUND) {
+            if (error instanceof errors.E_VALIDATION_ERROR) {
+                response.json({ status: 401, message: error.messages[0].message })
+            } else if (error instanceof err.E_ROW_NOT_FOUND) {
                 response.json({ status: 404, message: "Donnée non trouvée" })
             } else if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
                 response.json({ status: 401, message: error.message })

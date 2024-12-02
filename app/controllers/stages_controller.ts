@@ -52,7 +52,7 @@ export default class StagesController {
 
     async read({ response }: HttpContext) {
         try {
-            const stages = await Stage.query().preload('responsable').preload('exercice').preload('stagiaire')
+            const stages = await Stage.query().preload('typeStage').preload('responsable').preload('exercice').preload('stagiaire')
             return response.status(200).json(stages)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
@@ -81,7 +81,7 @@ export default class StagesController {
     async findByIntern({ request, response }: HttpContext) {
         try {
             const stagiaire = await Stagiaire.findBy({ matricule: request.params().id })
-            const stages = await Stage.query().where({ 'stagiaireId': stagiaire?.id }).preload('exercice').preload('stagiaire').preload('responsable', (p) => p.preload('entite')).preload('entite').orderBy('fin', 'desc')
+            const stages = await Stage.query().where({ 'stagiaireId': stagiaire?.id }).preload('typeStage').preload('exercice').preload('stagiaire').preload('responsable', (p) => p.preload('entite')).preload('entite').orderBy('fin', 'desc')
             return response.status(200).json(stages)
         } catch (error) {
             if (error instanceof err.E_ROW_NOT_FOUND) {

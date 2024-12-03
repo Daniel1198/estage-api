@@ -6,6 +6,7 @@ import Stagiaire from '#models/stagiaire'
 import env from './env.js'
 import Responsable from '#models/responsable'
 import NotificationEmail from '#models/notification_email'
+import Notification from '#models/notification'
 
 // Fonction de changement du statut d'un stage
 async function changeStatus(stage: Stage) {
@@ -58,17 +59,23 @@ async function sendReminderMail(daysBeforeEnd: number, email: string, personne: 
                 message.to(email!).cc(directeur?.email!).subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_manager_today', { responsable: stagiaire?.stages[0].responsable.nom + ' ' + stagiaire?.stages[0].responsable.prenom,stagiaire: stagiaire?.nom +' '+ stagiaire?.prenom })
             }
         } else if (personne === 'rh') {
+            const notification = new Notification()
             const emails: string[] = [] as string[];
             (await NotificationEmail.query()).map((e: NotificationEmail) => emails.push(e.email))
             if (daysBeforeEnd !== 0) {
+                notification.titre = 'Rappel : Fin de stage'
+                notification.message = 'Le stagiaire suivant a une date de fin proche : ' + stagiaire?.nom + ' ' + stagiaire?.prenom + ' le ' + moment(stagiaire?.stages[0].fin).format('DD.MM.YYYY') + '.'
                 message.to(stagiaire?.user.email!)
                 .cc(emails)
                 .subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_rh', { responsable: stagiaire?.user.fullName, stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom, dateFin: moment(stagiaire?.stages[0].fin).format('DD.MM.YYYY'), nbrJours: daysBeforeEnd })
             } else {
+                notification.titre = 'Rappel : Fin de stage'
+                notification.message = 'Le stagiaire suivant termine son stage aujourd\'hui : ' + stagiaire?.nom + ' ' + stagiaire?.prenom + '.'
                 message.to(stagiaire?.user.email!)
                 .cc(emails)
                 .subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_rh_today', { responsable: stagiaire?.user.fullName, stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom })
             }
+            notification.save()
         }
     })
 }

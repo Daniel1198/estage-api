@@ -15,6 +15,7 @@ const TypesStageController = () => import('#controllers/type_stages_controller')
 const ParametreController = () => import('#controllers/parametres_controller')
 const NotificationEmailsController = () => import('#controllers/notification_emails_controller')
 const TableauBordsController = () => import('#controllers/tableau_bords_controller')
+const NotificationsController = () => import('#controllers/notifications_controller')
 
 router.group(() => {
   // exercices routes
@@ -57,6 +58,14 @@ router.group(() => {
   router.group(() => {
     router.get('', [TableauBordsController, 'read'])
   }).prefix('/dashboard')
+  .use(middleware.auth({
+    guards: ['api'],
+  }))
+
+  // notifications routes
+  router.group(() => {
+    router.get('', [NotificationsController, 'read'])
+  }).prefix('/notifications')
   .use(middleware.auth({
     guards: ['api'],
   }))

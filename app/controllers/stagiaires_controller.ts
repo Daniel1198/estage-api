@@ -108,7 +108,7 @@ export default class StagiairesController {
             if (payload.entite)
                 result = result.filter((stg) => stg.stages[0].entite.id === payload.entite)
             if (payload.responsable)
-                result = result.filter((stg) => stg.stages[0].responsable.id === payload.responsable)
+                result = result.filter((stg) => stg.stages[0].responsableId === payload.responsable)
             if (payload.ageMin) {
                 result = result.filter((stg) => {
                     const age = new Date().getFullYear() - new Date(stg.dateNaissance!).getFullYear()

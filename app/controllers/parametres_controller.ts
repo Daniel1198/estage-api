@@ -10,20 +10,23 @@ export default class ParametresController {
     async store({ request, response }: HttpContext) {
         try {
             const payload = await request.validateUsing(storeOrEditSettingValidator)
-            if (payload.code === 'MAIL_CONFIG') {
-                const p = payload.valeur.split(';')
-                env.set('SMTP_HOST', p[0])
-                env.set('SMTP_PORT', p[1])
-                env.set('SMTP_NAME', p[2])
-                env.set('SMTP_USERNAME', p[3])
-                env.set('SMTP_PASSWORD', p[4])
+            
+            payload?.parametres.map(async param => {
+                if (param.code === 'MAIL_CONFIG') {
+                    const p = param.valeur.split(';')
+                    env.set('SMTP_HOST', p[0])
+                    env.set('SMTP_PORT', p[1])
+                    env.set('SMTP_NAME', p[2])
+                    env.set('SMTP_USERNAME', p[3])
+                    env.set('SMTP_PASSWORD', p[4])
 
-                payload.valeur = encryption.encrypt(payload.valeur)
-            } else {
-                env.set(payload.code, payload.valeur)
-            }
+                    param.valeur = encryption.encrypt(param.valeur)
+                } else {
+                    env.set(param.code, param.valeur)
+                }
 
-            await Parametre.updateOrCreate({ code: payload.code }, { valeur: payload.valeur });
+                await Parametre.updateOrCreate({ code: param.code }, { valeur: param.valeur });
+            })
             return response.status(201).json({ status: 201, message: 'Paramètres enregistrés avec succès !' })
         } catch (error) {
             if (error instanceof errors.E_VALIDATION_ERROR) {
@@ -39,7 +42,7 @@ export default class ParametresController {
     async read({ response }: HttpContext) {
         try {
             const parametres = [
-                { code: 'MAIL_CONFIG', valeur: env.get('SMTP_HOST') + ';' + env.get('SMTP_PORT') + ';' + (env.get('SMTP_NAME') ?? '') + ';' + env.get('SMTP_USERNAME') + ';'},
+                { code: 'MAIL_CONFIG', valeur: env.get('SMTP_HOST') + ';' + env.get('SMTP_PORT') + ';' + (env.get('SMTP_NAME') ?? '') + ';' + env.get('SMTP_USERNAME') + ';' },
                 { code: 'DURATION_BEFORE_ALERT', valeur: env.get('DURATION_BEFORE_ALERT') ?? '' }
             ]
             return response.status(200).json(parametres)

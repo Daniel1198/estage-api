@@ -42,6 +42,7 @@ export default class StagiairesController {
             stagiaire.numeroPiece = payload.numeroPiece!
             stagiaire.competenceProfessionnelle = payload.competenceProfessionnelle!
             stagiaire.statut = payload.statut
+            stagiaire.infoSurNote = payload.infoSurNote
             stagiaire.userId = auth.user?.id!
             stagiaire.save()
             return response.status(201).json({ status: 201, message: 'Stagiaire ajouté avec succès ! ', data: stagiaire })

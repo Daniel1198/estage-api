@@ -22,10 +22,13 @@ export default class StagesController {
             if (stg) {
                 return response.json({ status: 401, message: 'Un stage est actif pour le stagiaire. Veuillez attendre la fin du stage avant de procéder à l\'enregistrement d\'une nouvelle période.' })
             }
+            let numero = "000"
             const exercice = await Exercice.findByOrFail({ active: true })
+            numero = ((await Stage.query().where('exerciceId', exercice.id)).length + 1).toString().padStart(3, '0')
             const typeStage = await TypeStage.find(payload.typeStageId)
             const code = 'STG-' + exercice.code + '-' + typeStage?.intitule.substring(0, 3) + '-' + ((await Stage.all()).length + 1)
             stage.code = code
+            stage.numero = numero
             stage.typeStageId = payload.typeStageId
             stage.debut = payload.debut
             stage.fin = payload.fin

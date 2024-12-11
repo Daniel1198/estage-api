@@ -17,6 +17,9 @@ export default class Stage extends compose(BaseModel, SoftDeletes) {
   declare code: string
 
   @column()
+  declare numero: string
+
+  @column()
   declare debut: Date
 
   @column()

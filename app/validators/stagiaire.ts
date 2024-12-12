@@ -25,7 +25,8 @@ export const storeInternValidator = vine.compile(
         lienAvecStagiaire: vine.string().trim().toUpperCase().optional().nullable(),
         telephoneGarant: vine.string().trim().fixedLength(10).alphaNumeric().optional().nullable(),
         competenceProfessionnelle: vine.string().trim().toUpperCase().optional().nullable(),
-        statut: vine.string().toUpperCase().trim()
+        statut: vine.string().toUpperCase().trim(),
+        infoSurNote: vine.string().toLowerCase().trim()
     })
 )
 
@@ -52,7 +53,8 @@ export const editInternValidator = vine.compile(
         nomCompletGarant: vine.string().trim().toUpperCase().minLength(5).optional().nullable(),
         lienAvecStagiaire: vine.string().trim().toUpperCase().optional().nullable(),
         telephoneGarant: vine.string().trim().fixedLength(10).alphaNumeric().optional().nullable(),
-        competenceProfessionnelle: vine.string().trim().toUpperCase().optional().nullable()
+        competenceProfessionnelle: vine.string().trim().toUpperCase().optional().nullable(),
+        infoSurNote: vine.string().toLowerCase().trim().optional()
     })
 )
 

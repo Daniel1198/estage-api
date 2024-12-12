@@ -72,6 +72,9 @@ export default class Stagiaire extends compose(BaseModel, SoftDeletes) {
   declare numeroBadge: string | null
 
   @column()
+  declare infoSurNote: string
+
+  @column()
   declare userId: number | null
 
   @belongsTo(() => User)

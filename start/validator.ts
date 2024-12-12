@@ -11,4 +11,5 @@ vine.messagesProvider = new SimpleMessagesProvider({
     'maxLength': 'Le champ {{ field }} doit contenir au plus {{ max }} caractères',
     'number': 'Le champ {{ field }} doit être un nombre',
     'enum': 'La valeur du champ {{ field }} sélectionnée est invalide',
+    'array': 'Le champ {{ field }} doit être un tableau'
 })

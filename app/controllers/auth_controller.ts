@@ -15,12 +15,13 @@ export default class AuthController {
             const user = await User.verifyCredentials(code, password)
             const permissions = (await User.query().where({ code }).preload('permissions').first())?.permissions
             const parametreDrhName = (await Parametre.findBy({ code: 'DRH_NAME' }))
+            const parametreDrhJob = (await Parametre.findBy({ code: 'DRH_JOB' }))
             user.connectedAt = DateTime.now()
             user.save()
             const token = (await User.accessTokens.create(user, ['*'], {
                 expiresIn: '1h',
             })).value?.release()
-            return response.status(200).json({ status: 200, message: 'Connexion réussie !', token, data: { ...user.toJSON(), permissions }, drhName: parametreDrhName?.valeur })
+            return response.status(200).json({ status: 200, message: 'Connexion réussie !', token, data: { ...user.toJSON(), permissions }, drhName: parametreDrhName?.valeur, drhJob: parametreDrhJob?.valeur })
         } catch (error) {
             if (error instanceof authErrors.E_INVALID_CREDENTIALS) {
                 response.json({ status: 401, message: "Nom d'utilisateur ou mot de passe incorrecte" })

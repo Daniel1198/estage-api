@@ -2,7 +2,11 @@ import vine from '@vinejs/vine'
 
 export const storeOrEditSettingValidator = vine.compile(
     vine.object({
-        code: vine.string().trim().toUpperCase(),
-        valeur: vine.string().trim()
+        parametres: vine.array(
+            vine.object({
+                code: vine.string().trim().toUpperCase(),
+                valeur: vine.string().trim()
+            })
+        )
     })
 ) 

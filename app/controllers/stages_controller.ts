@@ -22,10 +22,13 @@ export default class StagesController {
             if (stg) {
                 return response.json({ status: 401, message: 'Un stage est actif pour le stagiaire. Veuillez attendre la fin du stage avant de procéder à l\'enregistrement d\'une nouvelle période.' })
             }
+            let numero = "000"
             const exercice = await Exercice.findByOrFail({ active: true })
+            numero = ((await Stage.query().where('exerciceId', exercice.id)).length + 1).toString().padStart(3, '0')
             const typeStage = await TypeStage.find(payload.typeStageId)
             const code = 'STG-' + exercice.code + '-' + typeStage?.intitule.substring(0, 3) + '-' + ((await Stage.all()).length + 1)
             stage.code = code
+            stage.numero = numero
             stage.typeStageId = payload.typeStageId
             stage.debut = payload.debut
             stage.fin = payload.fin
@@ -81,7 +84,7 @@ export default class StagesController {
     async findByIntern({ request, response }: HttpContext) {
         try {
             const stagiaire = await Stagiaire.findBy({ matricule: request.params().id })
-            const stages = await Stage.query().where({ 'stagiaireId': stagiaire?.id }).preload('typeStage').preload('exercice').preload('stagiaire').preload('responsable', (p) => p.preload('entite')).preload('entite').orderBy('fin', 'desc')
+            const stages = await Stage.query().where({ 'stagiaireId': stagiaire?.id }).preload('typeStage').preload('exercice').preload('stagiaire').preload('responsable', (p) => p.preload('entite')).preload('entite',(e) => e.preload('responsables', (r) => r.where({ estDirecteur: true }).first())).orderBy('fin', 'desc')
             return response.status(200).json(stages)
         } catch (error) {
             if (error instanceof err.E_ROW_NOT_FOUND) {

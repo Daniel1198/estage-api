@@ -42,6 +42,7 @@ export default class StagiairesController {
             stagiaire.numeroPiece = payload.numeroPiece!
             stagiaire.competenceProfessionnelle = payload.competenceProfessionnelle!
             stagiaire.statut = payload.statut
+            stagiaire.infoSurNote = payload.infoSurNote
             stagiaire.userId = auth.user?.id!
             stagiaire.save()
             return response.status(201).json({ status: 201, message: 'Stagiaire ajouté avec succès ! ', data: stagiaire })
@@ -76,7 +77,7 @@ export default class StagiairesController {
             const payload = await request.validateUsing(searchInternValidator)
             const stagiaires = await Stagiaire.query()
                 .preload('user')
-                .preload('stages', (p) => p.preload('typeStage').preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
+                .preload('stages', (p) => p.preload('typeStage').preload('entite', (e) => e.preload('responsables', (r) => r.where({ estDirecteur: true }).first())).preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             
                 let result: Stagiaire[] = stagiaires
             if (payload.matricule)
@@ -136,7 +137,7 @@ export default class StagiairesController {
 
     async readNews({ response }: HttpContext) {
         try {
-            const stagiaires = await Stagiaire.query().where({ statut: 'EN SAISIE' }).preload('user').preload('stages', (p) => p.preload('typeStage').preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
+            const stagiaires = await Stagiaire.query().where({ statut: 'EN SAISIE' }).preload('user').preload('stages', (p) => p.preload('typeStage').preload('entite', (e) => e.preload('responsables', (r) => r.where({ estDirecteur: true }).first())).preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             return response.status(200).json(stagiaires)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
@@ -149,7 +150,7 @@ export default class StagiairesController {
 
     async readFinished({ response }: HttpContext) {
         try {
-            const stagiaires = await Stagiaire.query().where({ statut: 'TERMINE' }).preload('user').preload('stages', (p) => p.preload('typeStage').preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
+            const stagiaires = await Stagiaire.query().where({ statut: 'TERMINE' }).preload('user').preload('stages', (p) => p.preload('typeStage').preload('entite', (e) => e.preload('responsables', (r) => r.where({ estDirecteur: true }).first())).preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             return response.status(200).json(stagiaires)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
@@ -162,7 +163,7 @@ export default class StagiairesController {
 
     async readActives({ response }: HttpContext) {
         try {
-            const stagiaires = await Stagiaire.query().where({ statut: 'ACTIF' }).preload('user').preload('stages', (p) => p.preload('typeStage').preload('entite').preload('exercice').preload('responsable').orderBy('fin', 'desc'))
+            const stagiaires = await Stagiaire.query().where({ statut: 'ACTIF' }).preload('user').preload('stages', (p) => p.preload('typeStage').preload('entite', (e) => e.preload('responsables', (r) => r.where({ estDirecteur: true }).first())).preload('exercice').preload('responsable').orderBy('fin', 'desc'))
             return response.status(200).json(stagiaires)
         } catch (error) {
             if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {

@@ -86,7 +86,7 @@ async function sendReminderMail(daysBeforeEnd: number, email: string, personne: 
 }
 
 // Planification pour exécuter la tâche tous les jours à minuit
-cron.schedule('*/2 * * * *', async () => {
+cron.schedule('30 5 * * *', async () => {
     const stages = await Stage.all()
     stages.map(async (stage) => {
         if (stage.statut !== 'TERMINE')

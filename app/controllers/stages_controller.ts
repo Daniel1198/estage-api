@@ -84,7 +84,7 @@ export default class StagesController {
     async findByIntern({ request, response }: HttpContext) {
         try {
             const stagiaire = await Stagiaire.findBy({ matricule: request.params().id })
-            const stages = await Stage.query().where({ 'stagiaireId': stagiaire?.id }).preload('typeStage').preload('exercice').preload('stagiaire').preload('responsable', (p) => p.preload('entite')).preload('entite').orderBy('fin', 'desc')
+            const stages = await Stage.query().where({ 'stagiaireId': stagiaire?.id }).preload('typeStage').preload('exercice').preload('stagiaire').preload('responsable', (p) => p.preload('entite')).preload('entite',(e) => e.preload('responsables', (r) => r.where({ estDirecteur: true }).first())).orderBy('fin', 'desc')
             return response.status(200).json(stages)
         } catch (error) {
             if (error instanceof err.E_ROW_NOT_FOUND) {

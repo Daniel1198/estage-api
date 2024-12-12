@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import Responsable from './responsable.js'
 
 export default class Entite extends BaseModel {
   @column({ isPrimary: true })
@@ -23,6 +24,9 @@ export default class Entite extends BaseModel {
 
   @hasMany(() => Entite)
   declare sousEntites: HasMany<typeof Entite>
+
+  @hasMany(() => Responsable)
+  declare responsables: HasMany<typeof Responsable>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

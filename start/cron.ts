@@ -28,16 +28,16 @@ async function updateStagiaireStatut(stage: Stage) {
     const date = new Date()
     const stagiaire = await Stagiaire.query().where({ id: stage.stagiaireId }).preload('user').preload('stages', (p) => p.preload('responsable').preload('entite').orderBy('fin', 'desc').first()).first()
     await Stagiaire.query().where({ id: stage.stagiaireId }).update({ statut: stagiaire?.stages[0].statut })
-    
+
     if (moment(stage.fin).diff(date, 'days') === +env.get('DURATION_BEFORE_ALERT')!) {
         sendReminderMail(+env.get('DURATION_BEFORE_ALERT')!, stagiaire?.email!, 'stagiaire', stagiaire!)
         sendReminderMail(+env.get('DURATION_BEFORE_ALERT')!, stagiaire?.stages[0].responsable.email!, 'responsable', stagiaire!)
         sendReminderMail(+env.get('DURATION_BEFORE_ALERT')!, '', 'rh', stagiaire!)
     }
-    if (moment(stage.fin).diff(date, 'days') === 0) {  
-        sendReminderMail(0, stagiaire?.email!, 'stagiaire', stagiaire!)
+    if (moment(stage.fin).diff(date, 'days') === 0) {
+        // sendReminderMail(0, stagiaire?.email!, 'stagiaire', stagiaire!)
         sendReminderMail(0, stagiaire?.stages[0].responsable.email!, 'responsable', stagiaire!)
-        sendReminderMail(0, '', 'rh', stagiaire!)
+        // sendReminderMail(0, stagiaire?.user.email!, 'rh', stagiaire!)
     }
 }
 
@@ -46,38 +46,50 @@ async function sendReminderMail(daysBeforeEnd: number, email: string, personne: 
     await mail.send(async (message) => {
         if (personne === 'stagiaire') {
             if (daysBeforeEnd !== 0) {
-                message.to(email!).subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_intern', { stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom, dateFin: moment(stagiaire?.stages[0].fin).format('DD.MM.YYYY')})
+                message.to(email!).subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_intern', { stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom, dateFin: moment(stagiaire?.stages[0].fin).format('DD.MM.YYYY') })
             } else {
                 message.to(email!).subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_intern_today', { stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom })
             }
         } else if (personne === 'responsable') {
             const directeur = await Responsable.query().where({ estDirecteur: true, entiteId: stagiaire?.stages[0].entiteId }).first()
+
             if (daysBeforeEnd !== 0) {
-                message.to(email!).cc(directeur?.email!).subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_manager', { responsable: stagiaire?.stages[0].responsable.nom + ' ' + stagiaire?.stages[0].responsable.prenom, stagiaire: stagiaire?.nom +' '+ stagiaire?.prenom, dateFin: moment(stagiaire?.stages[0].fin).format('DD.MM.YYYY')})
+                message.to(email!).cc(directeur?.email!).subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_manager', { responsable: stagiaire?.stages[0].responsable.nom + ' ' + stagiaire?.stages[0].responsable.prenom, stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom, dateFin: moment(stagiaire?.stages[0].fin).format('DD.MM.YYYY') })
             } else {
-                message.to(email!).cc(directeur?.email!).subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_manager_today', { responsable: stagiaire?.stages[0].responsable.nom + ' ' + stagiaire?.stages[0].responsable.prenom,stagiaire: stagiaire?.nom +' '+ stagiaire?.prenom })
+                message.to(email!).cc(directeur?.email!).subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_manager_today', { responsable: stagiaire?.stages[0].responsable.nom + ' ' + stagiaire?.stages[0].responsable.prenom, stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom })
             }
         } else if (personne === 'rh') {
             const emails: string[] = [] as string[];
-            (await NotificationEmail.query()).map((e: NotificationEmail) => emails.push(e.email))
+            const notifEmails = await NotificationEmail.query()
+            notifEmails.map((e: NotificationEmail) => emails.push(e.email))
             if (daysBeforeEnd !== 0) {
-                message.to(stagiaire?.user.email!)
-                .cc(emails)
-                .subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_rh', { responsable: stagiaire?.user.fullName, stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom, dateFin: moment(stagiaire?.stages[0].fin).format('DD.MM.YYYY'), nbrJours: daysBeforeEnd })
+                if (emails.length !== 0) {
+                    message.to(email!)
+                        .cc(emails)
+                        .subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_rh', { responsable: stagiaire?.user.fullName, stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom, dateFin: moment(stagiaire?.stages[0].fin).format('DD.MM.YYYY'), nbrJours: daysBeforeEnd })
+                } else {
+                    message.to(email!)
+                        .subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_rh', { responsable: stagiaire?.user.fullName, stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom, dateFin: moment(stagiaire?.stages[0].fin).format('DD.MM.YYYY'), nbrJours: daysBeforeEnd })
+                }
             } else {
-                message.to(stagiaire?.user.email!)
-                .cc(emails)
-                .subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_rh_today', { responsable: stagiaire?.user.fullName, stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom })
+                if (emails.length !== 0) {
+                    message.to(email!)
+                        .cc(emails)
+                        .subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_rh_today', { responsable: stagiaire?.user.fullName, stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom })
+                } else {
+                    message.to(email!)
+                        .subject('Rappel : Fin de stage').htmlView('emails/end_internship_for_rh_today', { responsable: stagiaire?.user.fullName, stagiaire: stagiaire?.nom + ' ' + stagiaire?.prenom })
+                }
             }
         }
     })
 }
 
 // Planification pour exécuter la tâche tous les jours à minuit
-cron.schedule('0 0 * * *', async () => {
+cron.schedule('*/2 * * * *', async () => {
     const stages = await Stage.all()
     stages.map(async (stage) => {
-        if (stage.statut !== 'TERMINE') 
+        if (stage.statut !== 'TERMINE')
             await changeStatus(stage)
     })
 })

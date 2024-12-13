@@ -30,15 +30,17 @@ async function updateStagiaireStatut(stage: Stage) {
     const stagiaire = await Stagiaire.query().where({ id: stage.stagiaireId }).preload('user').preload('stages', (p) => p.preload('responsable').preload('entite').orderBy('fin', 'desc').first()).first()
     await Stagiaire.query().where({ id: stage.stagiaireId }).update({ statut: stagiaire?.stages[0].statut })
 
-    if (moment(stage.fin).diff(date, 'days') === +env.get('DURATION_BEFORE_ALERT')!) {
+    const dateFin = moment(stage.fin).format("YYYY-MM-DD")
+    
+    if (moment(dateFin + ' 18:00', 'YYYY-MM-DD HH:mm').diff(date, 'days') === +env.get('DURATION_BEFORE_ALERT')!) {
         sendReminderMail(+env.get('DURATION_BEFORE_ALERT')!, stagiaire?.email!, 'stagiaire', stagiaire!)
         sendReminderMail(+env.get('DURATION_BEFORE_ALERT')!, stagiaire?.stages[0].responsable.email!, 'responsable', stagiaire!)
         sendReminderMail(+env.get('DURATION_BEFORE_ALERT')!, '', 'rh', stagiaire!)
     }
-    if (moment(stage.fin).diff(date, 'days') === 0) {
-        // sendReminderMail(0, stagiaire?.email!, 'stagiaire', stagiaire!)
+    if (moment(dateFin + ' 18:00', 'YYYY-MM-DD HH:mm').diff(date, 'days') === 0) {
+        sendReminderMail(0, stagiaire?.email!, 'stagiaire', stagiaire!)
         sendReminderMail(0, stagiaire?.stages[0].responsable.email!, 'responsable', stagiaire!)
-        // sendReminderMail(0, stagiaire?.user.email!, 'rh', stagiaire!)
+        sendReminderMail(0, stagiaire?.user.email!, 'rh', stagiaire!)
     }
 }
 
@@ -83,7 +85,7 @@ async function sendReminderMail(daysBeforeEnd: number, email: string, personne: 
 }
 
 // Planification pour exécuter la tâche tous les jours à minuit
-cron.schedule('30 5 * * *', async () => {
+cron.schedule('* * * * *', async () => {
     const stages = await Stage.all()
     stages.map(async (stage) => {
         if (stage.statut !== 'TERMINE')
